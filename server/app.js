@@ -58,13 +58,42 @@ hbs.registerPartials(path.join(__dirname, 'views', 'partials'));
 app.get('/', async (req, res) => {
   try {
     // Obtenir les dades de la base de dades
-    const cursosRows = await db.query('SELECT id, nom, tematica FROM cursos ORDER BY id');
-    const especialitatsRows = await db.query('SELECT id, nom FROM especialitats ORDER BY nom');
+    const moviesRows = await db.query(`
+        SELECT 
+            f.film_id, 
+            f.title, 
+            f.release_year
+            GROUP_CONCAT(CONCAT(a.first_name, ' ', a.last_name) SEPARATOR ', ') AS actors
+        FROM film f
+        JOIN film_actor fa ON f.film_id = fa.film_id
+        JOIN actor a ON fa.actor_id = a.actor_id
+        GROUP BY f.film_id
+        ORDER BY f.film_id ASC
+        LIMIT 5
+
+    `);
+    const categorysRows = await db.query(`
+        SELECT 
+            category_id,
+            name
+        FROM category
+        GROUP BY category_id
+        ORDER BY category_id ASC
+        LIMIT 5
+    `);
 
     // Transformar les dades a JSON (per les plantilles .hbs)
     // Cal informar de les columnes i els seus tipus
-    const cursosJson = db.table_to_json(cursosRows, { id: 'number', nom: 'string', tematica: 'string' });
-    const especialitatsJson = db.table_to_json(especialitatsRows, { id: 'number', nom: 'string' });
+    const moviesJson = db.table_to_json(moviesRows, {
+        film_id: 'number', 
+        title: 'string', 
+        release_year: 'number', 
+        actors: 'string'
+    });
+    const categorysJson = db.table_to_json(categorysRows, { 
+        category_id: 'number', 
+        name: 'string' 
+    });
 
     // Llegir l'arxiu .json amb dades comunes per a totes les pàgines
     const commonData = JSON.parse(
@@ -73,8 +102,8 @@ app.get('/', async (req, res) => {
 
     // Construir l'objecte de dades per a la plantilla
     const data = {
-      cursos: cursosJson,
-      especialitats: especialitatsJson,
+      movies: moviesJson,
+      categorys: categorysJson,
       common: commonData
     };
 
@@ -90,28 +119,34 @@ app.get('/movies', async (req, res) => {
   try {
 
     // Obtenir les dades de la base de dades
-    const cursosRows = await db.query(`
-      SELECT
-        c.id,
-        c.nom,
-        c.tematica,
-        COALESCE(
-          GROUP_CONCAT(DISTINCT m.nom ORDER BY m.nom SEPARATOR ', '),
-          '—'
-        ) AS mestre_nom
-      FROM cursos c
-      LEFT JOIN mestre_curs mc ON mc.curs_id = c.id
-      LEFT JOIN mestres m ON m.id = mc.mestre_id
-      GROUP BY c.id, c.nom, c.tematica
-      ORDER BY c.id;
+    const allMoviesRows = await db.query(`
+      SELECT 
+            f.film_id, 
+            f.title,
+            f.description,
+            f.release_year,
+            f.rating,
+            f.length,
+            l.name AS language
+            GROUP_CONCAT(CONCAT(a.first_name, ' ', a.last_name) SEPARATOR ', ') AS actors
+        FROM film f
+        JOIN language l ON f.language_id = l.language_id
+        JOIN film_actor fa ON f.film_id = fa.film_id
+        JOIN actor a ON fa.actor_id = a.actor_id
+        GROUP BY f.film_id
+        ORDER BY f.film_id ASC
+        LIMIT 15
     `);
 
     // Transformar les dades a JSON (per les plantilles .hbs)
-    const cursosJson = db.table_to_json(cursosRows, {
-      id: 'number',
-      nom: 'string',
-      tematica: 'string',
-      mestre_nom: 'string'
+    const allMoviesJson = db.table_to_json(allMoviesRows, {
+      film_id: 'number', 
+      title: 'string', 
+      release_year: 'number',
+      rating: 'string',
+      length: 'number',
+      language: 'string',
+      actors: 'string'
     });
 
     // Llegir l'arxiu .json amb dades comunes per a totes les pàgines
@@ -121,7 +156,7 @@ app.get('/movies', async (req, res) => {
 
     // Construir l'objecte de dades per a la plantilla
     const data = {
-      cursos: cursosJson,
+      cursos: allMoviesJson,
       common: commonData
     };
 
@@ -137,28 +172,33 @@ app.get('/customers', async (req, res) => {
   try {
 
     // Obtenir les dades de la base de dades
-    const cursosRows = await db.query(`
+    const customersRows = await db.query(`
       SELECT
-        c.id,
-        c.nom,
-        c.tematica,
-        COALESCE(
-          GROUP_CONCAT(DISTINCT m.nom ORDER BY m.nom SEPARATOR ', '),
-          '—'
-        ) AS mestre_nom
-      FROM cursos c
-      LEFT JOIN mestre_curs mc ON mc.curs_id = c.id
-      LEFT JOIN mestres m ON m.id = mc.mestre_id
-      GROUP BY c.id, c.nom, c.tematica
-      ORDER BY c.id;
+        c.customer_id,
+        c.first_name,
+        c.last_name,
+        c.email,
+        GROUP_CONCAT(
+          DISTINCT CONTACT(f.title, '(', DATE_FORMAT(r.rental_date, '%d/%m/%Y'), ')')
+          ORDER BY r.rental_date DESC
+          SEPARATOR '|'
+        ) AS rental_data
+      FROM customers c
+      JOIN rental r ON c.customer_id = r.customer_id
+      JOIN inventory i ON r.inventory_id = r.invontory_id
+      JOIN film f ON i.film_id = f.film_id
+      GROUP BY c.customer_id
+      ORDER BY c.customer_id ASC
+      LIMIT 25
     `);
 
     // Transformar les dades a JSON (per les plantilles .hbs)
-    const cursosJson = db.table_to_json(cursosRows, {
-      id: 'number',
-      nom: 'string',
-      tematica: 'string',
-      mestre_nom: 'string'
+    const customersJson = db.table_to_json(customersRows, {
+      customer_id: 'number',
+      first_name: 'string',
+      last_name: 'string',
+      email: 'string',
+      rentals_date: 'string'
     });
 
     // Llegir l'arxiu .json amb dades comunes per a totes les pàgines
@@ -168,7 +208,7 @@ app.get('/customers', async (req, res) => {
 
     // Construir l'objecte de dades per a la plantilla
     const data = {
-      cursos: cursosJson,
+      cursos: customersJson,
       common: commonData
     };
 
