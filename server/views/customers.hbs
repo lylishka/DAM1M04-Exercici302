@@ -8,7 +8,19 @@
     {{> menu}}
     
     <main>
-
+        <h1>Top 25 Clients</h1>
+        <div>
+            {{#each customers}}
+            <section>
+                <h2>{{first_name}}</h2>
+                <p>{{email}}</p>
+                <div>
+                    <h3>Últims Alquilers</h3>
+                    <p>{{rentals_date}}</p>
+                </div>
+            </section>
+            {{/each}}
+        </div>
     </main>
 
     {{> footer}}

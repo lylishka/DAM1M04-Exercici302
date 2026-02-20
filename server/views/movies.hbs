@@ -8,7 +8,22 @@
     {{> menu}}
     
     <main>
-
+        <h1>Top 15 Pelicules</h1>
+        <section>
+            {{#each allMovies}}
+            <h2>{{title}}</h2>
+            <span>{{rating}}</span>
+            <div>
+                <p><strong>Any</strong>: {{relase_year}}</p>
+                <p><strong>Duració</strong>: {{relase_year}}</p>
+                <p><strong>Idioma</strong>: {{language}}</p>
+            </div>
+            <div>
+                <h3>Actors</h3>
+                <p>{{actors}}</p>
+            </div>
+            {{/each}}
+        </section>
     </main>
 
     {{> footer}}

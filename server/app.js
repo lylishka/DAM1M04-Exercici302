@@ -16,16 +16,16 @@ if (!isProxmox) {
   db.init({
     host: '127.0.0.1',
     port: 3306,
-    user: 'root',
-    password: 'root',
+    user: 'developer',
+    password: 'P@ssw0rd',
     database: 'sakila'
   });
 } else {
   db.init({
     host: '127.0.0.1',
     port: 3306,
-    user: 'super',
-    password: '1234',
+    user: 'developer',
+    password: 'P@ssw0rd',
     database: 'sakila'
   });
 }
@@ -156,7 +156,7 @@ app.get('/movies', async (req, res) => {
 
     // Construir l'objecte de dades per a la plantilla
     const data = {
-      cursos: allMoviesJson,
+      allMovies: allMoviesJson,
       common: commonData
     };
 
@@ -208,7 +208,7 @@ app.get('/customers', async (req, res) => {
 
     // Construir l'objecte de dades per a la plantilla
     const data = {
-      cursos: customersJson,
+      customers: customersJson,
       common: commonData
     };
 
