@@ -64,10 +64,16 @@ footer {
     margin-top: 50px;
 }
 
+footer h2 {
+    font-size: 1.15rem;
+    margin-bottom: 10px;
+    color: #b8860b;
+    letter-spacing: 3px;
+}
+
 footer p {
-    font-size: 0.9rem;
-    margin: 0;
-    letter-spacing: 1px;
+    font-size: 0.95rem;
+    color: #666;
 }
 
 
