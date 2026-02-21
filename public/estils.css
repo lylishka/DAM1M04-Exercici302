@@ -55,6 +55,21 @@ h1, h2, h3 {
     text-transform: uppercase;
 }
 
+footer {
+    background-color: #1a1a1a;
+    color: #888;
+    text-align: center;
+    padding: 30px 0;
+    border-top: 1px solid #333;
+    margin-top: 50px;
+}
+
+footer p {
+    font-size: 0.9rem;
+    margin: 0;
+    letter-spacing: 1px;
+}
+
 
 /* index.hbs */
 
@@ -124,7 +139,45 @@ h1, h2, h3 {
 
 
 /* movies.hbs */
+.contenedor-tabla {
+    margin-top: 30px;
+}
 
+.tabla-peliculas {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    text-align: left;
+}
+
+.tabla-peliculas thead th {
+    background-color: #b8860b;
+    color: #000;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    text-transform: uppercase;
+    padding: 12px;
+    border: 1px solid #333;
+}
+
+.tabla-peliculas td {
+    padding: 12px;
+    border: 1px solid #333;
+}
+
+.titulo-pelicula {
+    color: #b8860b;
+    font-weight: bold;
+}
+
+.lista-actores {
+    font-size: 0.85rem;
+    color: #ccc
+}
+
+.tabla-peliculas tbody tr:hover {
+    background-color: #222;
+}
 
 
 /* customers.hbs */

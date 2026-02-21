@@ -8,21 +8,32 @@
     {{> menu}}
     
     <main>
-        <h1>Top 15 Pelicules</h1>
-        <section>
-            {{#each allMovies}}
-            <h2>{{title}}</h2>
-            <span>{{rating}}</span>
-            <div>
-                <p><strong>Any</strong>: {{release_year}}</p>
-                <p><strong>Duració</strong>: {{relase_year}}</p>
-                <p><strong>Idioma</strong>: {{language}}</p>
-            </div>
-            <div>
-                <h3>Actors</h3>
-                <p>{{actors}}</p>
-            </div>
-            {{/each}}
+        <h1>Top 15 Pel·lícules</h1>
+        <section class="contenedor-tabla">
+            <table class="tabla-peliculas">
+                <thead>
+                    <tr>
+                        <th>Títol</th>
+                        <th>Any</th>
+                        <th>Duració</th>
+                        <th>Rating</th>
+                        <th>Idioma</th>
+                        <th>Actors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each allMovies}}
+                    <tr>
+                        <td class="titulo-pelicula">{{title}}</td>
+                        <td>{{release_year}}</td>
+                        <td>{{length}} min</td>
+                        <td>{{rating}}</td>
+                        <td>{{language}}</td>
+                        <td class="lista-actores">{{actors}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
         </section>
     </main>
 
