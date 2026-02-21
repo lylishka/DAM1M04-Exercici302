@@ -58,9 +58,73 @@ h1, h2, h3 {
 
 /* index.hbs */
 
+/* Seccion de Peliculas */
+.peliculas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+}
+
+.tarjeta-peliculas {
+    display: flex;
+    flex-direction: column;
+    width: 270px;
+    background-color: #1a1a1a;
+    border: 1px solid #b8860b;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.tarjeta-peliculas img {
+    width: 100%;
+    height: 360px;
+    object-fit: cover;
+}
+
+.contenido-peliculas {
+    padding: 15px;
+}
+
+.detalles-pelicula {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.detalles-pelicula li {
+    margin-bottom: 5px;
+}
+
+/* Seccion de Categorias */
+.categorias {
+    margin-top: 50px;
+    margin-bottom: 20px;
+}
+
+.lista-categorias {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.lista-categorias li {
+    color: #e0e0e0;
+    font-size: 1.1rem;
+    padding: 8px 0;
+    border-bottom: 1px solid #333;
+}
+
+.lista-categorias li:hover {
+    color: #b8860b;
+    padding-left: 10px;
+    transition: 0.3s;
+}
+
 
 /* movies.hbs */
 
 
-/* customers.hbs */
 
+/* customers.hbs */

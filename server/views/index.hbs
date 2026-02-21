@@ -2,31 +2,35 @@
 <html lang="ca">
 <head>
     {{> header}}
-    <title>Home</title>
+    <title>Cartellera</title>
 </head>
 <body>
     {{> menu}}
     
     <main>
-        <h1>Home</h1>
+        <h1>Cartellera</h1>
         <section>
             <h2>Pelicules</h2>
-            <div>
+            <div class="peliculas">
                 {{#each movies}}
-                <img src="/imatges/{{film_id}}.png">
-                <div>
-                    <h3>{{title}}</h3>
-                    <p>{{release_year}}</p>
-                    <p><strong>Actors</strong>: {{actors}}</p>
-                </div>
+                <div class="tarjeta-peliculas">
+                    <img src="/imatges/{{film_id}}.png">
+                    <div class="contenido-peliculas">
+                        <h3>{{title}}</h3>
+                        <ul class="detalles-pelicula">
+                            <li><strong>Año</strong>: {{release_year}}</li>
+                            <li><strong>Actors</strong>: {{actors}}</li>
+                        </ul>
+                    </div>
+                </div>          
                 {{/each}}
             </div>
         </section>
-        <section>
+        <section class="categorias">
             <h2>Categories</h2>
-            <ul>
+            <ul class="lista-categorias">
                 {{#each categorys}}
-                <li>{{name}}</li>
+                <li class="tarjeta-categoria">{{name}}</li>
                 {{/each}}
             </ul>
         </section>
