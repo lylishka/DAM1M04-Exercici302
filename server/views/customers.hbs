@@ -9,14 +9,16 @@
     
     <main>
         <h1>Top 25 Clients</h1>
-        <div>
+        <div class="contenedor-clientes">
             {{#each customers}}
-            <section>
-                <h2>{{first_name}}</h2>
-                <p>{{email}}</p>
-                <div>
+            <section class="tarjeta-cliente">
+                <div class="cliente-info">
+                    <h2>{{first_name}}</h2>
+                    <p>{{email}}</p>
+                </div>
+                <div class="cliente-detalles">
                     <h3>Últims Alquilers</h3>
-                    <p>{{rental_data}}</p>
+                    <p class="lista-alquileres">{{rental_data}}</p>
                 </div>
             </section>
             {{/each}}
