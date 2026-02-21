@@ -15,17 +15,17 @@ const db = new MySQL();
 if (!isProxmox) {
   db.init({
     host: '127.0.0.1',
-    port: 3306,
-    user: 'developer',
-    password: 'P@ssw0rd',
+    port: 3307,
+    user: 'root',
+    password: 'root',
     database: 'sakila'
   });
 } else {
   db.init({
     host: '127.0.0.1',
-    port: 3306,
-    user: 'developer',
-    password: 'P@ssw0rd',
+    port: 3307,
+    user: 'super',
+    password: '1234',
     database: 'sakila'
   });
 }
@@ -62,22 +62,21 @@ app.get('/', async (req, res) => {
         SELECT 
             f.film_id, 
             f.title, 
-            f.release_year
+            f.release_year,
             GROUP_CONCAT(CONCAT(a.first_name, ' ', a.last_name) SEPARATOR ', ') AS actors
         FROM film f
-        JOIN film_actor fa ON f.film_id = fa.film_id
-        JOIN actor a ON fa.actor_id = a.actor_id
+        LEFT JOIN film_actor fa ON f.film_id = fa.film_id
+        LEFT JOIN actor a ON fa.actor_id = a.actor_id
         GROUP BY f.film_id
         ORDER BY f.film_id ASC
         LIMIT 5
-
     `);
+
     const categorysRows = await db.query(`
         SELECT 
             category_id,
             name
         FROM category
-        GROUP BY category_id
         ORDER BY category_id ASC
         LIMIT 5
     `);
@@ -90,6 +89,7 @@ app.get('/', async (req, res) => {
         release_year: 'number', 
         actors: 'string'
     });
+    
     const categorysJson = db.table_to_json(categorysRows, { 
         category_id: 'number', 
         name: 'string' 
@@ -127,7 +127,7 @@ app.get('/movies', async (req, res) => {
             f.release_year,
             f.rating,
             f.length,
-            l.name AS language
+            l.name AS language,
             GROUP_CONCAT(CONCAT(a.first_name, ' ', a.last_name) SEPARATOR ', ') AS actors
         FROM film f
         JOIN language l ON f.language_id = l.language_id
@@ -178,18 +178,26 @@ app.get('/customers', async (req, res) => {
         c.first_name,
         c.last_name,
         c.email,
-        GROUP_CONCAT(
-          DISTINCT CONTACT(f.title, '(', DATE_FORMAT(r.rental_date, '%d/%m/%Y'), ')')
-          ORDER BY r.rental_date DESC
-          SEPARATOR '|'
+        GROUP_CONCAT(f.title
+          ORDER BY r.rental_date ASC
+          SEPARATOR ' | '
         ) AS rental_data
-      FROM customers c
+      FROM (
+        SELECT * FROM customer
+        ORDER BY customer_id ASC
+        LIMIT 25
+      ) AS c
       JOIN rental r ON c.customer_id = r.customer_id
-      JOIN inventory i ON r.inventory_id = r.invontory_id
+      JOIN inventory i ON r.inventory_id = i.inventory_id
       JOIN film f ON i.film_id = f.film_id
-      GROUP BY c.customer_id
-      ORDER BY c.customer_id ASC
-      LIMIT 25
+      WHERE (
+        SELECT COUNT(*)
+        FROM rental r2
+        WHERE r2.customer_id = c.customer_id
+          AND r2.rental_date <= r.rental_date
+      ) <= 5
+      GROUP BY c.customer_id, c.first_name, c.last_name, c.email
+      ORDER BY c.customer_id ASC;
     `);
 
     // Transformar les dades a JSON (per les plantilles .hbs)
@@ -198,7 +206,7 @@ app.get('/customers', async (req, res) => {
       first_name: 'string',
       last_name: 'string',
       email: 'string',
-      rentals_date: 'string'
+      rental_data: 'string'
     });
 
     // Llegir l'arxiu .json amb dades comunes per a totes les pàgines
